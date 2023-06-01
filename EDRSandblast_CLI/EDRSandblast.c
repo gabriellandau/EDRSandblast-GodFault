@@ -735,6 +735,8 @@ Other options:\n\
             _putts_or_not(TEXT("[+] The vulnerable driver was successfully uninstalled!"));
         }
     }
+#else
+    TerminateProcess(GetCurrentProcess(), 0);
 #endif
 
     return lpExitCode;

