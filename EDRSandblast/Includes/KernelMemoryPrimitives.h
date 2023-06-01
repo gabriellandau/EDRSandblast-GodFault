@@ -11,8 +11,9 @@
 
 #define RTCore 0
 #define DBUtil 1
+#define GodFault 2
 // Select the driver to use with the following #define
-#define VULN_DRIVER RTCore
+#define VULN_DRIVER GodFault
 
 #if VULN_DRIVER == RTCore
 #define DEFAULT_DRIVER_FILE TEXT("RTCore64.sys")
@@ -24,6 +25,11 @@
 #define CloseDriverHandle CloseDriverHandle_DBUtil
 #define ReadMemoryPrimitive ReadMemoryPrimitive_DBUtil
 #define WriteMemoryPrimitive WriteMemoryPrimitive_DBUtil
+#elif VULN_DRIVER == GodFault
+#define DEFAULT_DRIVER_FILE TEXT("GodFault.exe")
+#define CloseDriverHandle CloseDriverHandle_GodFault
+#define ReadMemoryPrimitive ReadMemoryPrimitive_GodFault
+#define WriteMemoryPrimitive WriteMemoryPrimitive_GodFault
 #endif
 
 

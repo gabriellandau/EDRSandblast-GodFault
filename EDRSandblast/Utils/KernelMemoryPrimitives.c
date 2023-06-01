@@ -5,6 +5,7 @@
 
 #include "DriverRTCore.h"
 #include "DriverDBUtil.h"
+#include "DriverGodFault.h"
 #include "KernelUtils.h"
 #include "../EDRSandblast.h"
 
