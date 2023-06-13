@@ -1,3 +1,10 @@
+# EDRSandblast-GodFault
+By [Gabriel Landau](https://twitter.com/GabrielLandau) at [Elastic Security](https://www.elastic.co/security-labs/).
+
+Integrates [GodFault](https://github.com/gabriellandau/PPLFault#godfault) into [EDR Sandblast](https://github.com/wavestone-cdt/EDRSandblast), achieving the same result without the use of any vulnerable drivers.
+
+👇 Original README below 👇 
+
 # EDRSandBlast
 
 `EDRSandBlast` is a tool written in `C` that weaponize a vulnerable signed
