@@ -1,5 +1,5 @@
 # EDRSandblast-GodFault
-By [Gabriel Landau](https://twitter.com/GabrielLandau) at [Elastic Security](https://www.elastic.co/security-labs/).
+By [Gabriel Landau](https://twitter.com/GabrielLandau) at [Elastic Security](https://www.elastic.co/security-labs/).  Modification of EDRSandblast - see original README below.
 
 Integrates [GodFault](https://github.com/gabriellandau/PPLFault#godfault) into [EDR Sandblast](https://github.com/wavestone-cdt/EDRSandblast), achieving the same result without the use of any vulnerable drivers.
 
