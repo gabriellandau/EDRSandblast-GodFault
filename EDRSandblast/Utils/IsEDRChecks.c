@@ -377,6 +377,7 @@ TCHAR const* EDR_DRIVERS[] = {
    _T("WdFilter.sys"),
    _T("mpFilter.sys"),
    _T("SysmonDrv.sys"),
+   _T("PROCMON24.SYS"),
    // MicroWorld Software Services Pvt. Ltd.
    _T("mwfsmfltr.sys"),
    // NeoAutus
